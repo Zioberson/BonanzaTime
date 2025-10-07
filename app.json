@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "BonanzaTime",
+    "name": "bonanzatime",
     "slug": "bonanzatime",
     "version": "1.0.0",
     "sdkVersion": "54.0.0",
@@ -23,7 +23,6 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    },
-    "scheme": "bonanzatime"
+    }
   }
 }
