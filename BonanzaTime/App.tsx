@@ -1,55 +1,70 @@
 import 'react-native-gesture-handler';
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { View, Text, StyleSheet } from 'react-native';
-import { StatusBar } from 'expo-status-bar';
-import './src/firebase/config'; // Initialize Firebase
+import { ActivityIndicator, View, StyleSheet } from 'react-native';
+import { getAuth, onAuthStateChanged, User } from 'firebase/auth';
 
-// A placeholder screen component
-function HomeScreen() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.title}>BonanzaTime</Text>
-      <Text>Welcome to your time tracking app!</Text>
-      <Text style={styles.subtitle}>Project structure is ready.</Text>
-    </View>
-  );
-}
+import './src/firebase/config'; // Initialize Firebase
+import LoginScreen from './src/screens/LoginScreen';
+import HomeScreen from './src/screens/HomeScreen';
 
 const Stack = createStackNavigator();
 
-export default function App() {
+const App = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [initializing, setInitializing] = useState(true);
+
+  useEffect(() => {
+    const auth = getAuth();
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setUser(user);
+      if (initializing) {
+        setInitializing(false);
+      }
+    });
+
+    // Unsubscribe from the listener when the component unmounts
+    return unsubscribe;
+  }, []);
+
+  if (initializing) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#007bff" />
+      </View>
+    );
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ title: 'Dashboard' }}
-        />
+        {user ? (
+          // User is signed in
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{ title: 'Dashboard' }}
+          />
+        ) : (
+          // No user is signed in
+          <Stack.Screen
+            name="Login"
+            component={LoginScreen}
+            options={{ headerShown: false }}
+          />
+        )}
       </Stack.Navigator>
-      <StatusBar style="auto" />
     </NavigationContainer>
   );
-}
+};
 
 const styles = StyleSheet.create({
-  container: {
+  loadingContainer: {
     flex: 1,
-    alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#fff',
-    padding: 20,
+    alignItems: 'center',
   },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    marginBottom: 16,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: 'gray',
-    marginTop: 8,
-  }
 });
+
+export default App;
