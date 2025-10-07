@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { View, Text, StyleSheet } from 'react-native';
 import { StatusBar } from 'expo-status-bar';
+import './src/firebase/config'; // Initialize Firebase
 
 // A placeholder screen component
 function HomeScreen() {
@@ -11,6 +12,7 @@ function HomeScreen() {
     <View style={styles.container}>
       <Text style={styles.title}>BonanzaTime</Text>
       <Text>Welcome to your time tracking app!</Text>
+      <Text style={styles.subtitle}>Project structure is ready.</Text>
     </View>
   );
 }
@@ -38,10 +40,16 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#fff',
+    padding: 20,
   },
   title: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     marginBottom: 16,
   },
+  subtitle: {
+    fontSize: 16,
+    color: 'gray',
+    marginTop: 8,
+  }
 });
